@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>GenGermanium</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #overlayText {
+            color: white;
+            font-size: 24px;
+            padding: 10px;
+        }
+
+        #logContainer {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        #outputContainer {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 10px 0;
+            z-index: 998;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+            background: linear-gradient(to right, #b8bdf5, #e2d2ef);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), inset 0 0 50px rgba(255, 255, 255, 0.1);
+        }
+
+        #outputContainer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            pointer-events: none;
+            opacity: 0.5;
+            transform: scale(0.5);
+            transition: opacity 0.3s ease, transform 0.5s ease;
+        }
+
+        #outputContainer:hover {
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.2), inset 0 0 100px rgba(255, 255, 255, 0.2);
+        }
+
+        #outputContainer:hover::before {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+
+        #btnCheck {
+			padding: 10px 20px;
+			font-size: 16px;
+			border: none;
+			background-color: #0078D4;
+			color: white;
+			border-radius: 5px;
+			cursor: pointer;
+			outline: none;
+			
+        }
+
+        .news-alert {
+			top: 0;
+			left: 0;
+            font-size: 14px;
+            color: #000;
+        }
+
+        #footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+        }
+
+        #footer::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 10px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
+            border-radius: 5px;
+        }
+
+        #toggleContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px;
+            z-index: 1000;
+            position: relative;
+            margin-bottom: 100px;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .emoji-container {
+            position: relative;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .emoji-container a {
+            text-decoration: none;
+        }
+
+        .emoji-container h1 {
+            font-family: Arial, sans-serif;
+            color: #000;
+            font-size: 27px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .emoji-container h2 {
+            color: #5c5c5c;
+            font-size: 13px;
+            margin-top: 10px;
+            font-weight: normal;
+        }
+
+        .emoji-container .emoji {
+            font-size: 80px;
+            display: inline-block;
+            cursor: pointer;
+            margin-top: 20px;
+            animation: changeColor 15s infinite linear;
+            -webkit-background-clip: text;
+            color: transparent;
+            position: relative;
+        }
+
+        @keyframes changeColor {
+            0%, 100% {
+                background-size: 0% 100%;
+                background-image: linear-gradient(45deg, rgba(255, 255, 0, 0.5), rgba(0, 0, 255, 0.5));
+            }
+
+            25% {
+                background-size: 100% 0%;
+                background-image: linear-gradient(45deg, rgba(0, 0, 255, 0.5), rgba(255, 0, 255, 0.5));
+            }
+
+            50% {
+                background-size: 0% 100%;
+                background-image: linear-gradient(45deg, rgba(255, 0, 255, 0.5), rgba(128, 0, 128, 0.5));
+            }
+
+            75% {
+                background-size: 100% 0%;
+                background-image: linear-gradient(45deg, rgba(128, 0, 128, 0.5), rgba(255, 105, 180, 0.5));
+            }
+        }
+		
+		.toggle-button {
+			position: absolute;
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: white;
+			border: 2px solid #cbc5e8; /*  Off */
+			border-radius: 10px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			color: black;
+			cursor: pointer;
+		}
+
+		.toggle-switch {
+			display: inline-block;
+			width: 40px;
+			height: 20px;
+			background-color: #ccc; /* Off */
+			border-radius: 18px;
+			position: relative;
+			margin-left: 10px;
+		}
+
+		.toggle-switch::before {
+			content: "";
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			width: 16px;
+			height: 16px;
+			background-color: white;
+			border-radius: 50%;
+			transition: transform 0.3s ease;
+		}
+
+		.toggle-switch.on {
+			background-color: purple; /* Beibehaltung der lila Farbe im eingeschalteten Zustand */
+		}
+
+		.toggle-switch.on::before {
+			transform: translateX(20px);
+		}
+
+	   .summary {
+			font-size: 18px;
+			margin-top: 20px;
+			backdrop-filter: blur(10px);
+			background-color: rgba(255, 255, 255, 0.7);
+			padding: 20px;
+			border-radius: 10px;
+			animation: changeColor 15s infinite linear;
+		}
+}
+    </style>
+</head>
+<body>
+    <div class="emoji-container">
+        <a href="https://github.com/builtbybel/WhyNotWinAI" target="_blank">
+            <span class="emoji" title="Follow WhyNotWinAI on GitHub">&#9863;</span>
+        </a>
+        <p style="font-size: 16px; font-weight: bold; margin-top: -10px; background-color: #ffc73a;"></p>
+        <h1 style="margin: 10;">WhyNotWinAI</h1>
+        <h2>Check next-gen Windows AI compatibility</h2>
+        <p>
+            <a href="https://github.com/builtbybel/WhyNotWinAI" target="_blank" title="Follow WhyNotWinAIon GitHub" style="color: #000;">
+                Follow on <span style="color: magenta;">&#10084;</span> GitHub
+            </a>
+        </p>
+    </div>
+
+    <div id='toggleContainer'>
+        <label class="toggle-button" onclick="toggleSwitch()">
+            Engage enhanced online checks
+            <div class="toggle-switch" id="toggleSwitch"></div>
+        </label>
+    </div>
+
+    <div>
+        <div id='overlay'>
+            <div id='overlayText'>Let's dive into the potential of your PC running next-gen Windows AI (Germanium) Platform...</div>
+        </div>
+
+        <div id='outputContainer'>
+            <div>        
+			    <p class="news-alert">Exciting News Alert! 🚀 Microsoft has confirmed that the upcoming Windows OS release expected this fall will be branded Windows 11, version 24H2! <a href="https://www.windowscentral.com/software-apps/windows-11/microsoft-confirms-name-of-the-next-major-version-of-windows-and-its-not-windows-12" target="_blank">More Infos</a></p>
+                <button id='btnCheck' onclick='runChecks()'>Check compatibility</button>
+            </div>
+        </div>
+		        <div id='logContainer' contenteditable='true'></div>
+				
+		     <div id='footer'>
+                <p><small>A Component of <a href="https://github.com/builtbybel/CoMachina" target="_blank">CoMachina</a> - A Belim app creation (C) 2024.</small></p>
+                <p><small>WhyNotWinAI is a next-gen Windows AI compatibility checker, available as part of CoMachina or as a standalone tool. <a href="https://github.com/builtbybel/WhyNotWinAI" target="_blank">GitHub</a>.</small></p>
+            </div>
+    </div>
+
+    <script>
+        function toggleSwitch() {
+            var switchButton = document.getElementById('toggleSwitch');
+            switchButton.classList.toggle('on');
+            window.chrome.webview.postMessage('toggleChecks');
+        }
+
+        function runChecks() {
+            document.getElementById('overlay').style.display = 'flex';
+            window.chrome.webview.postMessage('runChecks');
+        }
+
+        function openApp(appUrl) {
+            window.open(appUrl, '_blank');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            window.chrome.webview.addEventListener('message', (event) => {
+                const logContainer = document.getElementById('logContainer');
+                logContainer.innerHTML += event.data;
+
+                if (event.data.includes('Checks completed.')) {
+                    document.getElementById('overlay').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
