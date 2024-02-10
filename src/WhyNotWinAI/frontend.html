@@ -61,6 +61,7 @@
             opacity: 0.5;
             transform: scale(0.5);
             transition: opacity 0.3s ease, transform 0.5s ease;
+
         }
 
         #outputContainer:hover {
@@ -72,17 +73,56 @@
             transform: scale(1);
         }
 
-        #btnCheck {
-			padding: 10px 20px;
-			font-size: 16px;
+		#btnCheck,
+		#btnRemoveAI {
+			padding: 8px 16px; /* Adjusted padding for a smaller button */
+			font-size: 13px; /* Slightly smaller font size */
 			border: none;
-			background-color: #0078D4;
 			color: white;
-			border-radius: 5px;
+			border-radius: 4px; /* Slightly reduced border radius for a more modern look */
 			cursor: pointer;
 			outline: none;
+			transition: all 0.3s ease; /* Added transition for smoother hover effect */
+			background-image: linear-gradient(to right, #C6488E, #8e257a); /* Gradient background */
+		}
+
+		#btnCheck:hover,
+		#btnRemoveAI:hover {
+			background-image: linear-gradient(to right, #8a216f, #5a1a4d); /* Gradient background on hover */
+		}
+		
+		/* Tooltips */
+		.tooltip {
+			position: relative;
+			display: inline-block;
+		}
+
+		.tooltip .tooltiptext {
+			visibility: hidden;
+			width: 300px;
+			background-color: rgba(200, 200, 200, 0.9); /* Grey color with transparency */
+			color: #000;
+			text-align: center;
+			border-radius: 6px;
+			padding: 8px;
+			position: absolute;
+			z-index: 999;
+			bottom: calc(100% + 10px); 
+			left: 50%;
+			transform: translateX(-50%);
+			opacity: 0;
+			transition: opacity 0.3s;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow for a glassy effect */
+			font-family: "Segoe UI", Arial, sans-serif; /* Windows 11 font style */
+			font-size: 11px; /* Adjusted font size for better readability */
+			line-height: 1.4; /* Adjusted line height for better spacing */
 			
-        }
+		}
+
+		.tooltip:hover .tooltiptext {
+			visibility: visible;
+			opacity: 1;
+		}
 
         .news-alert {
 			top: 0;
@@ -146,7 +186,7 @@
 
         .emoji-container h2 {
             color: #5c5c5c;
-            font-size: 13px;
+            font-size: 12px;
             margin-top: 10px;
             font-weight: normal;
         }
@@ -159,7 +199,6 @@
             animation: changeColor 15s infinite linear;
             -webkit-background-clip: text;
             color: transparent;
-            position: relative;
         }
 
         @keyframes changeColor {
@@ -247,7 +286,7 @@
         </a>
         <p style="font-size: 16px; font-weight: bold; margin-top: -10px; background-color: #ffc73a;"></p>
         <h1 style="margin: 10;">WhyNotWinAI</h1>
-        <h2>Check next-gen Windows AI compatibility</h2>
+        <h2>Check if your system can handle the new AI-powered features.</h2>
         <p>
             <a href="https://github.com/builtbybel/WhyNotWinAI" target="_blank" title="Follow WhyNotWinAIon GitHub" style="color: #000;">
                 Follow on <span style="color: magenta;">&#10084;</span> GitHub
@@ -257,10 +296,11 @@
 
     <div id='toggleContainer'>
         <label class="toggle-button" onclick="toggleSwitch()">
-            Engage enhanced online checks
+            Use AI-driven checks
             <div class="toggle-switch" id="toggleSwitch"></div>
         </label>
     </div>
+
 
     <div>
         <div id='overlay'>
@@ -269,15 +309,22 @@
 
         <div id='outputContainer'>
             <div>        
-			    <p class="news-alert">Exciting News Alert! 🚀 Microsoft has confirmed that the upcoming Windows OS release expected this fall will be branded Windows 11, version 24H2! <a href="https://www.windowscentral.com/software-apps/windows-11/microsoft-confirms-name-of-the-next-major-version-of-windows-and-its-not-windows-12" target="_blank">More Infos</a></p>
-                <button id='btnCheck' onclick='runChecks()'>Check compatibility</button>
+			    <p class="news-alert">Exciting News Alert! 🚀 Microsoft has confirmed that the upcoming Windows OS release expected this fall will be branded Windows 11, version 24H2! <a href="https://www.windowscentral.com/software-apps/windows-11/microsoft-confirms-name-of-the-next-major-version-of-windows-and-its-not-windows-12" target="_blank">More Infos</a></p>       
+			  <div class="tooltip">
+				<button id="btnCheck" onclick='runChecks()'>Check compatibility</button>
+				<span class="tooltiptext">Run compatibility check</span>
+			 </div>
+			<div class="tooltip">
+				<button id="btnRemoveAI" onclick='runRemoveAI()'>Remove AI features</button>
+				<span class="tooltiptext">Some integrated AI features can be disabled with this option, such as the Copilot button in the taskbar and in the Edge browser. To identify installed AI on your computer, activate the top toggle 'Use AI-Driven checks' for a thorough analysis.</span>
+			</div>
             </div>
         </div>
-		        <div id='logContainer' contenteditable='true'></div>
+		     
+			 <div id='logContainer' contenteditable='true'></div>
 				
 		     <div id='footer'>
-                <p><small>A Component of <a href="https://github.com/builtbybel/CoMachina" target="_blank">CoMachina</a> - A Belim app creation (C) 2024.</small></p>
-                <p><small>WhyNotWinAI is a next-gen Windows AI compatibility checker, available as part of CoMachina or as a standalone tool. <a href="https://github.com/builtbybel/WhyNotWinAI" target="_blank">GitHub</a>.</small></p>
+                <p><small>A Belim app creation (C) 2024. <a href="https://github.com/builtbybel/WhyNotWinAI" target="_blank">GitHub</a></small></p>
             </div>
     </div>
 
@@ -292,6 +339,16 @@
             document.getElementById('overlay').style.display = 'flex';
             window.chrome.webview.postMessage('runChecks');
         }
+		
+		function runRemoveAI() {
+			document.getElementById('overlay').style.display = 'flex';
+			window.chrome.webview.postMessage('runRemoveAI');
+
+			setTimeout(function() {
+				alert("Any AI features in your Windows build that can be disabled have been turned off.");
+			}, 500);
+		}
+
 
         function openApp(appUrl) {
             window.open(appUrl, '_blank');
@@ -302,7 +359,7 @@
                 const logContainer = document.getElementById('logContainer');
                 logContainer.innerHTML += event.data;
 
-                if (event.data.includes('Checks completed.')) {
+                if (event.data.includes('Completed.')) {
                     document.getElementById('overlay').style.display = 'none';
                 }
             });
