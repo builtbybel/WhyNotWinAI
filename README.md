@@ -3,4 +3,5 @@ This app checks whether your hardware is compatible with the latest Windows buil
 
 Additionally, this app can perform a thorough system analysis and also detect and disable internal AI features in various Windows areas. 
 
-![Screenshot 2024-02-09 235607](https://github.com/builtbybel/WhyNotWinAI/assets/57478606/ad549c8f-a955-432b-8b92-9d034c3dc8ce)
+
+![Screenshot 2024-02-10 082514](https://github.com/builtbybel/WhyNotWinAI/assets/57478606/266dcb4f-1e58-4d3e-9f85-6bc825587f4b)
